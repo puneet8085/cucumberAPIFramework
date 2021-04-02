@@ -1,0 +1,87 @@
+//RestAssured work on 3 keyword given  when and then
+// given - All input details
+//when - submit the api( give resource and http method type here)
+//then - validate the response
+//log().all(). method are used to show log in console
+		
+	
+//having hard coded value for adding new book . it will fail if we run second time bcz data will
+ already present in server with these details
+//size method is used to fetch total no of record in a array. put array name with size method
+// [] bracket represent array in JSOn so if you want to retrieve a particular key from array then
+// write like arrayname[index from which you want to read value].key whose value you want to fetch	
+// for starting API testing in project, we can do validation part using JSOn path library and response .
+ this is called mock or dummy api testing.
+//if you have hard coded value in a HTTP request like post delete then it will fail second time and so on .
+ so pass value in json through parameter
+// we use extract().response().asString () to get response in string format under a variable
+ then we pass this string variable in JSONPAth object and call get() method using reference variable
+  of JSON path class. Also we pass KEY present in JSON response to get value for that key
+//for reading json from json file pass body as body(new String (Files.readAllBytes(Paths.get("./jsonfile/addplace.json"))))
+//we use SessionFIlter class to capture session from 1 api and use it in another api . this is generally used
+ to capture seesion cookies
+//  Syntax : SessionFilter session = new SessionFilter;
+	given().header().body().filter(session).when().put  // api 1 here we are capturing session details
+	given().header().body().filter(session).when().put  // api 2 here we are using session details
+//we use multipart() to add attachment through API. and pass header as shown below
+	example 
+	given().header("content-type","multipart/form-data").multipart("anyname", new FILE("filepath)).when().post()
+//relaxedhttpsvalidation() method is used to bypass https certificate validation
+//Oauth 2 is a type of authentication. generally we get authorization code in response which we use in further
+ api.we have a auth url provided by
+authorization Admin(server team) and generally we pass below query parameter in step 1 to get this
+ 1. Scope  : it is a URL format content details which we want to fetch from authorization server like in udemy.com
+ if we do authorization from google
+             then Udemy ask google to share first name last name email id etc as a scope
+ 2. Auth_URL : URL exposed by the client on which server we need authorization
+ 3. client ID: every request application got a unique client id from authorization server. like Udemy have one from
+ google and book my show have a different
+                one from google
+ 4. response_type  : generally we have code as valur for this field because we are expecting a token 
+ 
+ 5. redirect_uri : URL at which user will get redirected after successfully authentication. for example : in Udemy
+ if we login through google then user
+                   lands on home page after login.
+
+  from step 1 we got a access code then in step 2 we pass below query parameter
+  access code : received from step 1
+  client id : same as passed in step 1
+  client secret id : received from authorization server end when a client register with them to use their services
+  redirect_uri : URL at which user will get redirected after successfully authentication. for example : in Udemy
+  if we login through google then user
+                   lands on home page after login.
+                   
+   grant_type : authorization_code   (in case of token it will always be authorization_code and in case of credentials
+   it will be client_credentials)
+   
+   
+   // if i dnt want to perform assert on status code/header and body of response then i can directly call asString()
+   after http method name
+   and it will give response in String. so in this case
+   we dosnt need to call extract(). response() methods before asString() method.
+   
+   // to pass multiple query param in one api request we use queryparams("key","value").queryparams("key","value").
+   and so on and for one we use queryparam("key","value").
+  
+   //Serialization and Deserialization : first we create pojo classes i.e plain object java class based on key
+   present in request jSON(create a variable for each key) and create getter and setter for all these  key variable
+   
+   In Serialization we call all setter method and provide value to each key and then pass java object of parent
+    pojo class for this JSOn request in body
+   In Deserialization we store API response in the form of java object of parent pojo class for JSOn response
+   body and then fetch each key value using getter method with this java object
+   
+     by defualt API response return type is response class but we store it in string by calling asString() method in last
+     
+     SpecBuilder are used in Request and response to make code more optimise. In this process we create specbuilder for
+      those prerequisite part of API which is common in multiple API
+     and store that in RequestSpecification type and then call When method directly
+     We also use spec builder in response part as well. here we write all common function and pass output in a spec
+      variable whose return type is ResponseSpecBuilder.
+
+//we use enum class to make code more useable by writing resource inside enum and calling them from stepdefinition.
+ Here we pass text from scenario as a paramter to tell stepdefinition which api resource we need. And paramter value
+  in feature file should match with method in enum consisting resource. Enum are used to write constant collection or method.
+
+For logging we use addfilter option inside requestspecbuilder and pass object of printstream which generate a new
+ file using fileoutput stream. Here we add addfilter method for both request and response to log .
